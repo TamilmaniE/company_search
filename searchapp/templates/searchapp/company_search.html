@@ -1,0 +1,283 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Search</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.typekit.net/lww4sqi.css">
+
+    <style>
+        /* Entry Point */
+        body {
+            background: #FAFAFA;
+            height: 787px;
+            flex-shrink: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Frame 5 */
+        .form-container {
+            color: #171A1C;
+            background: #FFF;
+            border-radius: 16px;
+            box-shadow: 0px 0.547px 1.095px 0px rgba(0, 0, 0, 0.25);
+            width: 540px;
+            padding: 56px;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 16px;
+        }
+        .frame-21{
+            color:  #171A1C; /* Use primary text color */
+            font-family: Neue Haas Grotesk Display Pro,sans-serif; /* Ensure fallback */
+            font-size: 30px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: 38px; /* 126.667% */
+            letter-spacing: 0.6px;
+        }
+        
+        /* Frame 4 */
+        .frame-4 {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: var(--05, 4px);
+            align-self: stretch;
+            color: #171A1C;
+        }
+
+        .frame-4 .icon {
+            color: #636B74;
+        }
+        .body-md {
+            font-size: 14px;
+            color: #636B74;
+            font-family: Inter;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 142%;
+            
+        }
+        
+        /* Frame 15 */
+        .frame-15 {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: var(--2, 16px);
+            align-self: stretch;
+        }
+
+        /* TextField/Outlined */
+        .textfield-outlined {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            align-self: stretch;
+        }
+
+        /* Label */
+        .label {
+            display: flex;
+            padding-bottom: 6px;
+            align-items: flex-start;
+            color: #171A1C;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: 150%; /* 21px */
+            font-family: Inter;
+        }
+        .custom-input{
+            color:  #555E68;
+            padding-bottom: 6px;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 155%; /* 27.9px */
+            font-family: Inter;
+        }
+        
+        /* Container */
+        .container-box {
+            display: flex;
+            
+            align-items: flex-start;
+            gap: 8px;
+            align-self: stretch;
+            border-radius: 8px;
+            border: 1px solid var(--neutral-outlined-Border, #CDD7E1);
+            background: var(--background-surface, #FBFCFE);
+            box-shadow: 0px 1px 2px 0px rgba(21, 21, 21, 0.08);
+        }
+  
+        .btn-primary {
+            min-height: 48px;
+            padding: 6px 24px;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            align-self: stretch;
+            border-radius: 32px;
+            background: #131313; /* Default background */
+            color: #FFF;        /* Default text color */
+            border: none;
+            transition: all 0.3s ease; /* Smooth transition for hover effect */
+        }
+
+        .btn-primary:hover {
+            background: #333333; /* Slightly lighter shade of the default background */
+            color: #FFFFFF;      /* Ensure text remains readable */
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Add subtle shadow for depth */
+        }
+
+        
+       
+        .logo {
+            position: absolute;
+            top: 16px;
+            left: 26px;
+            width: 143px;
+            height: 28px;
+            flex-shrink: 0;
+            
+        }
+        /* Image at Bottom-Left */
+        .bottom-left-image {
+            position: absolute;
+            bottom: 16px;
+            left: -18px;
+            width: 257.215px;
+            height: 241.038px;
+            flex-shrink: 0;
+        }
+        /* Style for the dropdown */
+    .form-select {
+        font-size: 16px;
+        font-family: Inter;
+        font-weight: 400;
+        padding: 12px;
+        border-radius: 8px;
+        border: 1px solid #CDD7E1;
+        background-color: #FBFCFE;
+        color: #555E68;
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+        height: auto; /* Ensures it adapts */
+    }
+
+    .form-select:focus {
+        border-color: #E9E9E9;
+        outline: none;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Dropdown options */
+    .form-select option {
+        padding: 10px;
+        font-size: 14px;
+        background-color: #FFF;
+        color: #555E68;
+    }
+
+    /* Highlight on hover */
+    .form-select option:hover {
+        background-color: #F1F1F1;
+        color: #333;
+      
+        
+    </style>
+  
+</head>
+
+<body>
+    <a href="{% url 'company_search_page'%}"><img src="/static/searchapp/Isolation_Mode.svg" alt="Company Logo" class="logo"></a>
+    <div class="form-container">
+       
+       <h2 class="frame-21"> <b>Get Started</b></h2>
+        <p class="body-md">Search and select a company from the list below.</p>
+        <form class="frame-15">
+            
+            <div class="textfield-outlined">
+                <label for="searchInput" class="label">Company Name</label>
+                <div class="container-box">
+                    <input type="text" id="searchInput" class="form-control custom-input" onkeyup="searchCompanies()" placeholder="Enter Company name" required>
+                </div>
+            </div>
+
+           
+            <div class="textfield-outlined">
+                <label for="resultsDropdown" class="label">Select Company</label>
+                <div class="container-box">
+                    <select id="resultsDropdown" class="form-select" size="8" onchange="setSelectedCompany()">
+                        <option>Select a company from the list</option>
+                    </select>
+                </div>
+            </div>
+            
+
+            
+            <button type="button" class="btn-primary" onclick="redirectToCompanyDetails()">Continue</button>
+        </form>
+        
+    </div>
+     <!-- Bottom-Left Image -->
+    <a href="{% url 'company_search_page' %}">
+        <img src="/static/searchapp/pep-Globe.svg" alt="Decorative Globe" class="bottom-left-image">
+    </a>
+
+    <script>
+        let selectedCompany = '';
+
+        function setSelectedCompany() {
+            let dropdown = document.getElementById('resultsDropdown');
+            selectedCompany = dropdown.value;
+        }
+
+        async function searchCompanies() {
+            let query = document.getElementById('searchInput').value;
+            let response = await fetch(`/api/search/?q=${query}`);
+            let data = await response.json();
+            console.log(data);
+            let dropdown = document.getElementById('resultsDropdown');
+            dropdown.innerHTML = '';
+
+            if (data.length > 0) {
+                data.forEach(item => {
+                    let option = document.createElement('option');
+                    let location = item.location || '';
+                    option.value = item.company_name;
+                    option.innerText = `${item.company_name} ${location}`.trim();
+                    dropdown.appendChild(option);
+                });
+            } else {
+                dropdown.innerHTML = '<option>No matching company found</option>';
+            }
+        }
+
+        function redirectToCompanyDetails() {
+            let dropdown = document.getElementById('resultsDropdown');
+            let searchInput = document.getElementById('searchInput').value.trim();
+            let companyName = dropdown.value;
+
+            if (companyName && companyName !== "Select a company from the list") {
+                window.location.href = `/company/details/?company_name=${encodeURIComponent(companyName)}`;
+            } else if (searchInput) {
+                window.location.href = `/register/new/?company_name=${encodeURIComponent(searchInput)}`;
+            } else {
+                alert("Please select a company from the dropdown or enter a company name.");
+            }
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

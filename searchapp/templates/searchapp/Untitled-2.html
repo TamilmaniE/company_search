@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Search</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f7f7f7; /* Soft gray background */
+        }
+        .form-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+            border: 1px solid #d92c27; /* Border color */
+        }
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #d92c27; /* Heading color */
+        }
+        .btn-primary {
+            width: 100%;
+            margin-top: 15px;
+            background-color: #d92c27; /* Button color */
+            border-color: #a31f15; /* Button border color */
+        }
+        .btn-primary:hover {
+            background-color: #a31f15; /* Darker hover effect */
+            border-color: #a31f15;
+        }
+        .btn-secondary {
+            width: 100%;
+            margin-top: 10px;
+            background-color: #6c757d; /* Secondary button color */
+            border-color: #565e64; /* Secondary button border */
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268; /* Darker hover effect */
+            border-color: #4e555b;
+        }
+        .form-label {
+            color: #d92c27; /* Label color */
+        }
+        .form-select {
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+        }
+        .text-muted {
+            font-size: 0.9rem;
+        }
+    </style>
+    <style>
+        /* Container Styling */
+        .form-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            border: 1px solid #d92c27;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 50px auto;
+        }
+    
+        h1 {
+            color: #d92c27;  /* Heading color */
+        }
+    
+        /* Custom Label Styling */
+        .custom-label {
+            color: #d92c27;  /* Label color */
+            font-weight: 500;
+        }
+    
+        /* Custom Input Styling */
+        .custom-input {
+            border: 1px solid #ced4da;  /* Default border color */
+            transition: border-color 0.3s;
+        }
+    
+        .custom-input:focus {
+            border-color: #a31f15;  /* Border color on hover/focus */
+            box-shadow: 0 0 5px rgba(163, 31, 21, 0.25); /* Subtle red glow */
+        }
+    
+        /* Primary Button Styling */
+        .custom-primary-btn {
+            background-color: #d92c27;
+            border-color: #a31f15;
+            color: white;
+        }
+    
+        .custom-primary-btn:hover {
+            background-color: #b42520;
+            border-color: #861912;
+        }
+    
+        /* Secondary Button Styling */
+        .custom-secondary-btn {
+            background-color: #6c757d;
+            border-color: #6c757d;
+            color: white;
+        }
+    
+        .custom-secondary-btn:hover {
+            background-color: #5c636a;
+            border-color: #565e64;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Pepagora Internet</h1>
+        <p class="text-muted text-center">Search and select a company from the list below.</p>
+        <form>
+            <div class="mb-3">
+                <label for="searchInput" class="form-label custom-label">Enter Company Name</label>
+                
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    class="form-control custom-input" 
+                    onkeyup="searchCompanies()" 
+                    placeholder="Enter company name">
+            </div>
+            <div class="mb-3">
+                <label for="resultsDropdown" class="form-label custom-label">Select Company</label>
+                <select id="resultsDropdown" class="form-select custom-input" size="5" onchange="setSelectedCompany()">
+                    <option>Select a company from the list</option>
+                </select>
+            </div>
+            <button type="button" class="btn btn-primary custom-primary-btn" onclick="redirectToCompanyDetails()">Continue</button>
+        </form>
+    </div>
+
+<script>
+        let selectedCompany = '';
+        function setSelectedCompany() {
+            let dropdown = document.getElementById('resultsDropdown');
+            selectedCompany = dropdown.value;
+        }
+
+        async function searchCompanies() {
+            let query = document.getElementById('searchInput').value;
+            let response = await fetch(`/api/search/?q=${query}`);
+            let data = await response.json();
+            let dropdown = document.getElementById('resultsDropdown');
+            dropdown.innerHTML = '';
+
+            if (data.length > 0) {
+                data.forEach(item => {
+                    let option = document.createElement('option');
+                    option.value = item.company_name;
+                    option.innerText = item.company_name;
+                    dropdown.appendChild(option);
+                });
+            } else {
+                dropdown.innerHTML = '<option>No matching company found</option>';
+            }
+        }
+
+        function redirectToCompanyDetails() {
+        let dropdown = document.getElementById('resultsDropdown');
+        let searchInput = document.getElementById('searchInput').value.trim();
+        let companyName = dropdown.value;
+
+        if (companyName && companyName !== "Select a company from the list") {
+            // If a company is selected from the dropdown, redirect to the company details page
+            window.location.href = `/company/details/?company_name=${encodeURIComponent(companyName)}`;
+        } else if (searchInput) {
+            // If no company is selected from the dropdown but the search input has a value, redirect to the registration page
+            window.location.href = `/register/new/?company_name=${encodeURIComponent(searchInput)}`;
+        } else {
+            // If neither a company is selected nor a search input is entered, show appropriate alert
+            alert("Please select a company from the dropdown or enter a company name.");
+        }
+    }
+
+
+    </script>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+
+##########
+registered_usersData.html page
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registered Users Data</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-4">
+        <h1 class="mb-4">Registered Users Data</h1>
+        
+        {% if page_obj.object_list %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Company Name</th>
+                        <th>Contact Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in page_obj %}
+                        <tr>
+                            <td>{{ item.company_name }}</td>
+                            <td>{{ item.contact_fname|default:''|add:" "|add:item.contact_lname|default:'' }}</td>
+                            <td>{{ item.email }}</td>
+                            <td>{{ item.mobile }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- Pagination Controls -->
+            <nav>
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1" aria-label="First">
+                                <span aria-hidden="true">&laquo;&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if num >= page_obj.number|add:-2 and num <= page_obj.number|add:2 %}
+                            <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">
+                                <span aria-hidden="true">&raquo;&raquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% else %}
+            <div class="alert alert-warning text-center" role="alert">
+                No data available to display.
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+%%%%%%%
+register_form.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Company</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+</head>
+
+<body>
+    <div class="form-container">
+        <h1>Register Company</h1>
+        
+        <form method="POST" id="companyForm" action="/register/new/" onsubmit="return validateForm()">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="companyName" class="form-label">Company Name</label>
+                <input type="text" id="companyName" name="company_name" class="form-control" value="{{ company_name }}">
+            </div>
+            <div class="mb-3">
+                <label for="contactFname" class="form-label">Contact First Name</label>
+                <input type="text" id="contactFname" name="contact_fname" class="form-control" value="{{ contact_fname }}">
+                
+            </div>
+            <div class="mb-3">
+                <label for="contactLname" class="form-label">Contact Last Name</label>
+                <input type="text" id="contactLname" name="contact_lname" class="form-control" value="{{ contact_lname }}">
+                
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" id="email" name="email" class="form-control" value="{{ email }}">
+            </div>
+            <div class="mb-3">
+                <label for="phone" class="form-label">Phone</label>
+                <input type="text" id="phone" name="mobile" class="form-control" value="{{ mobile }}">
+                
+            </div>
+            <div class="mb-3">
+                <label for="com_id" class="form-label">com_id</label>
+                <input type="number" id="com_id" name="com_id" class="form-control" value="{{ com_id }}" readonly>
+                
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save and Continue</button>
+        </form>
+        
+    </div>
+    <script>
+        // Pre-fill the company name if present in the URL
+        let params = new URLSearchParams(window.location.search);
+        let companyName = params.get('company_name');
+        if (companyName) {
+            document.getElementById('companyName').value = companyName;
+        }
+
+        async function validateForm() {
+            const email = document.getElementById("email").value;
+            const phone = document.getElementById("phone").value;
+
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(email)) {
+                alert("Please enter a valid email address.");
+                return false;
+            }
+
+            const phonePattern = /^(\d{10}|(\d{3}[- ]?)?\d{7,10})$/;
+            if (!phonePattern.test(phone)) {
+                alert("Please enter a valid phone or landline number.");
+                return false;
+            }
+
+            try {
+                await Promise.all([
+                    fetch(`/send-email-otp/?email=${email}`),
+                    fetch(`/send-sms-otp/?phone=${phone}`)
+                ]);
+                alert("OTP sent to email and phone.");
+                return true;
+            } catch (error) {
+                alert("Failed to send OTPs. Please try again.");
+                return false;
+            }
+        }
+
+    </script>
+</body>
+
+</html>
+
+$$$$$$$$$$$$$$$$$
+<!-- verify.html css styles -->
+<style>
+    body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background-color: #f7f7f7; /* Soft gray background */
+    }
+    .form-container {
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        max-width: 500px;
+        width: 100%;
+        border: 1px solid #d92c27; /* Border color */
+    }
+    h1 {
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+        text-align: center;
+        color: #d92c27; /* Heading color */
+    }
+    .btn-primary {
+        width: 100%;
+        margin-top: 15px;
+        background-color: #d92c27; /* Button color */
+        border-color: #a31f15; /* Button border color */
+    }
+    .btn-primary:hover {
+        background-color: #a31f15; /* Darker hover effect */
+        border-color: #a31f15;
+    }
+    .form-label {
+        color: #d92c27; /* Line color for labels */
+    }
+</style>
+##########
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* General Styles */
+        body {
+            background-color: #FAFAFA;
+            margin: 0;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            background-color: #343a40;
+            min-height: 100vh;
+            color: #FFF;
+        }
+        .sidebar a {
+            color: #ADB5BD;
+            text-decoration: none;
+            margin: 10px 0;
+            display: block;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .sidebar a:hover {
+            color: #FFF;
+            background-color: #495057;
+        }
+
+        /* Content Styles */
+        .content {
+            padding: 20px;
+        }
+        h1, h2 {
+            color: #171A1C; /* Heading color */
+            font-family: "Neue Haas Grotesk Display Pro", sans-serif; /* Fallback font */
+            font-size: 30px;
+            font-weight: 500;
+            line-height: 38px;
+            letter-spacing: 0.6px;
+        }
+
+        p {
+            color: #636B74;
+            font-family: Inter, sans-serif;
+            font-size: 14px;
+            line-height: 142%;
+        }
+
+        /* Button Styles */
+        .btn-primary {
+            min-height: 48px;
+            padding: 6px 24px;
+            justify-content: center;
+            align-items: center;
+            border-radius: 32px;
+            background: #131313;
+            color: #FFF;
+            border: none;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background: #333333;
+            color: #FFFFFF;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="col-md-3 col-lg-2 d-md-block sidebar">
+                <div class="p-3">
+                    <h2 class="text-center">Sidebar</h2>
+                    {% if role == "superadmin" %}
+                        <a href="{% url 'registered_users' %}">Registered Users Page</a>
+                        <a href="{% url 'add_user' %}">Add User</a>
+                    {% elif role == "admin" %}
+                        <a href="{% url 'registered_users' %}">Company Page</a>
+                    {% elif role == "user" %}
+                        <a href="{% url 'registered_users' %}">Company Page</a>
+                    {% endif %}
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 content">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+                    <h1>Welcome to the Dashboard</h1>
+                </div>
+                <p>This is the main dashboard content. Use this space to display relevant information.</p>
+                <button class="btn-primary">Sample Button</button>
+            </main>
+        </div>
+    </div>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
